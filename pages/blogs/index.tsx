@@ -1,7 +1,8 @@
 import { Blog } from "@/models/blog.inteface";
-import { axiosCMS } from "../../configs/axios";
+import Link from "next/link";
 import { Layout } from "@/components/Layout";
 import { FC } from "react";
+import { axiosCMS } from "../../configs/axios";
 import { GetServerSideProps } from "next";
 
 type Props = {
@@ -10,13 +11,17 @@ type Props = {
 
 const BlogsPage: FC<Props> = ({ data }) => {
   return (
-    <Layout>
-      <h1>Blogs</h1>
-      {data.map((blog: Blog) => (
-        <div key={blog.id}>
-          <h2>{blog.title}</h2>
-        </div>
-      ))}
+    <Layout title="Blogs">
+      <div>
+        <h1>Blogs</h1>
+        {data.map((blog: Blog) => (
+          <div key={blog.id}>
+            <Link href={`/blogs/${blog.slug}`}>
+              <a>{blog.title}</a>
+            </Link>
+          </div>
+        ))}
+      </div>
     </Layout>
   );
 };
