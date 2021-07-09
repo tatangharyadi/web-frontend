@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    env_file:
+      - ./.env.local
+
+networks:
+  default:
+    name: dev
+    driver: bridge
