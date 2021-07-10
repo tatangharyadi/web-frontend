@@ -2,7 +2,7 @@ import { Blog } from "@/models/blog.inteface";
 import Link from "next/link";
 import { Layout } from "@/components/Layout";
 import { FC } from "react";
-import { axiosCMS } from "../../configs/axios";
+import { axiosCMS } from "@/config/axios";
 import { GetServerSideProps } from "next";
 
 type Props = {

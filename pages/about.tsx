@@ -16,7 +16,7 @@ type Props = {
 const AboutPage: FC<Props> = ({ frontmatter, content }) => {
   return (
     <Layout title={frontmatter.title}>
-      <div className="w-full px-10 py-6 bg-white mt-6">
+      <div className=" m-3">
         <div className="prose">
           <div dangerouslySetInnerHTML={{ __html: marked(content) }}></div>
         </div>

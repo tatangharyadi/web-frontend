@@ -1,7 +1,7 @@
 import { Blog } from "@/models/blog.inteface";
 import { Layout } from "@/components/Layout";
 import { FC } from "react";
-import { axiosCMS } from "configs/axios";
+import { axiosCMS } from "@/config/axios";
 import { GetStaticPaths, GetStaticProps } from "next";
 
 type Props = {
