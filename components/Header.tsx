@@ -1,7 +1,16 @@
+import { signOut, useSession } from "next-auth/client";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import Link from "next/link";
+import { axiosAPIAlt } from "@/config/axios";
 
 export const Header = () => {
+  const [session, loading] = useSession();
+
+  const handleLogout = async () => {
+    //await axiosAPIAlt.post("auth/logout");
+    signOut({ callbackUrl: "/" });
+  };
+
   return (
     <header>
       <nav className="flex items-center  m-3 p-3 shadow-sm">
@@ -26,14 +35,25 @@ export const Header = () => {
             </Link>
           </li>
         </ul>
-        <div className="">
-          <Link href="/">
-            <a className="flex items-center gap-1 rounded px-3 py-1 bg-gray-700 text-sm text-gray-100">
-              <FaSignInAlt />
-              Login
-            </a>
-          </Link>
-        </div>
+        {!session ? (
+          <div className="">
+            <Link href="/api/auth/signin">
+              <a className="flex items-center gap-1 rounded px-3 py-1 bg-gray-700 text-sm text-gray-100">
+                <FaSignInAlt />
+                Login
+              </a>
+            </Link>
+          </div>
+        ) : (
+          <div className="">
+            <button
+              onClick={() => handleLogout()}
+              className="flex items-center gap-1 rounded px-3 py-1 bg-gray-700 text-sm text-gray-100"
+            >
+              <FaSignOutAlt /> Logout
+            </button>
+          </div>
+        )}
       </nav>
     </header>
 
