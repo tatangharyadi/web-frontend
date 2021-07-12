@@ -17,9 +17,9 @@ const LoginPage = () => {
     e.preventDefault();
 
     const res: any = await signIn("domain", {
+      redirect: false,
       username: email,
       password,
-      redirect: false,
     });
     console.log(res);
     if (res.error === "CredentialsSignin" || !res.error) {

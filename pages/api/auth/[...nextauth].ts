@@ -1,7 +1,7 @@
 import { axiosAPI } from "@/config/axios";
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
-import { ToastContainer } from "react-toastify";
+import { redirect } from "next/dist/next-server/server/api-utils";
 
 export default NextAuth({
   providers: [
@@ -23,16 +23,13 @@ export default NextAuth({
       async authorize(credentials, req) {
         const { username, password } = credentials;
 
-        const res = await axiosAPI.post("auth/login", {
+        const { data } = await axiosAPI.post("auth/login", {
           email: username,
           password,
         });
 
-        const cookie = res.headers["set-cookie"];
-        const { data } = res;
-
         if (data) {
-          return { ...data, cookie };
+          return { email: data.user, accessToken: data.access_token };
         } else {
           return null;
         }
@@ -43,16 +40,24 @@ export default NextAuth({
     jwt: true,
     maxAge: 60 * 60 * 24,
   },
-  secret: "secret",
   pages: {
     signIn: "/auth/login",
   },
   callbacks: {
+    async signIn(user, account, profile) {
+      return true;
+    },
+    async redirect(url, baseUrl) {
+      return url === process.env.NODE_ENV ? "http://localhost:8080" : url;
+    },
     async jwt(token, user, account, profile, isNewUser) {
+      if (user?.accessToken) {
+        token.accessToken = user?.accessToken;
+      }
       return token;
     },
     async session(session, token) {
-      console.log(token);
+      session.accessToken = token.accessToken;
       return session;
     },
   },
