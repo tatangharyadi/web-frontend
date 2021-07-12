@@ -47,9 +47,11 @@ export const Header = () => {
         ) : (
           <>
             <div>
-              <a className="rounded px-3 py-1 text-gray-500 hover:text-gray-900">
-                {session.user?.email}
-              </a>
+              <Link href="/auth/profile">
+                <a className="rounded px-3 py-1 text-gray-500 hover:text-gray-900">
+                  {session.user?.email}
+                </a>
+              </Link>
             </div>
             <div className="">
               <button
