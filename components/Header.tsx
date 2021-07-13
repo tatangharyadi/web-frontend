@@ -21,7 +21,7 @@ export const Header = () => {
         </div>
         <ul className="flex flex-grow">
           <li>
-            <Link href="/">
+            <Link href="/products">
               <a className="rounded px-3 py-1 text-gray-500 hover:text-gray-900">
                 Products
               </a>
