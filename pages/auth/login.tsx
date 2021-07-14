@@ -1,25 +1,38 @@
 import { signIn } from "next-auth/client";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useState, FormEvent } from "react";
 import { FaUser } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 import { Layout } from "@/components/Layout";
 
+interface IFormInput {
+  email: string;
+  password: string;
+}
+
+const schema = Yup.object().shape({
+  email: Yup.string().required("Email is required").email("Email is invalid"),
+  password: Yup.string().required("Password is required"),
+});
+
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>({ resolver: yupResolver(schema) });
 
   const router = useRouter();
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     const res: any = await signIn("domain", {
       redirect: false,
-      username: email,
-      password,
+      username: data.email,
+      password: data.password,
     });
 
     if (res.error === "CredentialsSignin" || !res.error) {
@@ -38,7 +51,7 @@ const LoginPage = () => {
           </h1>
           <ToastContainer />
 
-          <form onSubmit={handleSubmit} className="mt-7">
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-7">
             <div>
               <label className="text-gray-700" htmlFor="email">
                 Email Address
@@ -46,22 +59,26 @@ const LoginPage = () => {
               <input
                 type="email"
                 id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email address"
                 className="w-full rounded px-3 py-2 bg-gray-300 border focus:bg-white focus:outline-none"
+                {...register("email")}
               ></input>
+              <span className="py-2 text-sm text-red-500">
+                {errors?.email?.message}
+              </span>
             </div>
             <div className="mt-3">
               <label htmlFor="password">Password</label>
               <input
                 type="password"
                 id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
                 className="w-full rounded px-3 py-2 bg-gray-300 border focus:bg-white focus:outline-none"
+                {...register("password")}
               ></input>
+              <span className="py-2 text-sm text-red-500">
+                {errors?.password?.message}
+              </span>
             </div>
             <div className="mt-0 text-right">
               <Link href="/">
