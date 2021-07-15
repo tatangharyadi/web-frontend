@@ -1,9 +1,11 @@
+import { useAppSelector } from "../app/hook";
 import { signOut, useSession } from "next-auth/client";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 import Link from "next/link";
 import { axiosAPI } from "@/config/axios";
 
 export const Header = () => {
+  const totalSku = useAppSelector((state) => state.cart.totalSku);
   const [session, loading] = useSession();
 
   const handleLogout = async () => {
@@ -20,13 +22,20 @@ export const Header = () => {
           </Link>
         </div>
         <ul className="flex flex-grow">
-          <li>
+          <li className="relative">
             <Link href="/products">
               <a className="rounded px-3 py-1 text-gray-500 hover:text-gray-900">
                 Products
               </a>
             </Link>
           </li>
+          {totalSku > 0 && (
+            <li>
+              <span className="px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-500 rounded-full">
+                {totalSku}
+              </span>
+            </li>
+          )}
           <li>
             <Link href="/blogs">
               <a className="rounded px-3 py-1 text-gray-500 hover:text-gray-900">

@@ -1,10 +1,12 @@
+import { useAppDispatch } from "../app/hook";
+import { productAdded, productRemoved } from "../features/cart/cartSlice";
 import {
   FaShoppingCart,
   FaStar,
   FaStarHalfAlt,
   FaRegStar,
-  FaShareAlt,
   FaHeart,
+  FaBackspace,
 } from "react-icons/fa";
 import { Product } from "@/models/product.interface";
 import { gql, useQuery } from "@apollo/client";
@@ -26,6 +28,8 @@ export const queryVars = {
 };
 
 export const ProductList = () => {
+  const dispatch = useAppDispatch();
+
   const { loading, error, data, fetchMore, networkStatus } = useQuery(
     GQL_QUERY,
     {
@@ -37,11 +41,24 @@ export const ProductList = () => {
   if (error) return <h1>Error loading posts.</h1>;
   if (loading) return <h1>Loading</h1>;
 
-  const { products: Products } = data;
+  const { products }: { products: Products } = data;
+
+  const handleShoppingCart = (code: string) => {
+    dispatch(
+      productAdded({
+        code,
+        qtyOrder: 1,
+      })
+    );
+  };
+
+  const handleBackspace = (code: string) => {
+    dispatch(productRemoved(code));
+  };
 
   return (
     <div className="flex">
-      {Products.map((product: Product) => (
+      {products.map((product: Product) => (
         <div key={product._id} className="m-3 p-3 shadow">
           <div className="flex justify-center items-center group">
             <div className="overflow-hidden relative">
@@ -56,15 +73,21 @@ export const ProductList = () => {
               className="flex absolute gap-1 text-2xl bg-gray-700 text-gray-100 opacity-0 
                     group-hover:opacity-100 transition duration-300"
             >
-              <a className="p-2 hover:bg-red-500">
+              <button
+                onClick={() => handleShoppingCart(product.name)}
+                className="p-2 hover:bg-red-500"
+              >
                 <FaShoppingCart />
-              </a>
-              <a className="p-2 hover:bg-red-500">
-                <FaShareAlt />
-              </a>
+              </button>
               <a className="p-2 hover:bg-red-500">
                 <FaHeart />
               </a>
+              <button
+                onClick={() => handleBackspace(product.name)}
+                className="p-2 hover:bg-red-500"
+              >
+                <FaBackspace />
+              </button>
             </div>
           </div>
           <a className="font-semibold text-gray-700 ">{product.name}</a>
